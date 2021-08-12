@@ -1,0 +1,630 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #228899; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">apivideo</span><span style="color: #333333">,</span> <span style="color: #0e84b5; font-weight: bold">apiaudio</span><span style="color: #333333">,</span> <span style="color: #0e84b5; font-weight: bold">ffmpeg</span>
+<span style="color: #228899; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">os</span><span style="color: #333333">,</span> <span style="color: #0e84b5; font-weight: bold">json</span><span style="color: #333333">,</span> <span style="color: #0e84b5; font-weight: bold">csv</span><span style="color: #333333">,</span> <span style="color: #0e84b5; font-weight: bold">sys</span><span style="color: #333333">,</span> <span style="color: #0e84b5; font-weight: bold">webbrowser</span>
+<span style="color: #228899; font-weight: bold">from</span> <span style="color: #0e84b5; font-weight: bold">pydub</span> <span style="color: #228899; font-weight: bold">import</span> AudioSegment
+<span style="color: #228899; font-weight: bold">from</span> <span style="color: #0e84b5; font-weight: bold">pydub.playback</span> <span style="color: #228899; font-weight: bold">import</span> play
+<span style="color: #228899; font-weight: bold">from</span> <span style="color: #0e84b5; font-weight: bold">apivideo.apis</span> <span style="color: #228899; font-weight: bold">import</span> VideosApi
+<span style="color: #228899; font-weight: bold">from</span> <span style="color: #0e84b5; font-weight: bold">apivideo.exceptions</span> <span style="color: #228899; font-weight: bold">import</span> ApiAuthException
+
+<span style="color: #666666; font-style: italic"># Functions</span>
+
+<span style="color: #666666; font-style: italic"># Get the keys from the user </span>
+<span style="color: #228899; font-weight: bold">def</span> <span style="color: #55eedd; font-weight: bold">get_aflo_key</span>():
+    <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+        aflo <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Enter your aflorithmic API key (available at https://console.api.audio/): &quot;</span>)
+        <span style="color: #228899; font-weight: bold">if</span> <span style="color: #007722">len</span>(aflo) <span style="color: #333333">&lt;</span> <span style="color: #6666ff; font-weight: bold">32</span> <span style="color: #000000; font-weight: bold">or</span> <span style="color: #007722">len</span>(aflo) <span style="color: #333333">&gt;</span> <span style="color: #6666ff; font-weight: bold">32</span>:
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;The aflorithmic API key is not correct, please try again.&quot;</span>)
+        <span style="color: #228899; font-weight: bold">else</span>: 
+            <span style="color: #228899; font-weight: bold">return</span> aflo
+            <span style="color: #228899; font-weight: bold">break</span>
+
+<span style="color: #228899; font-weight: bold">def</span> <span style="color: #55eedd; font-weight: bold">get_apivideo_key</span>():
+    <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+        api_video <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Enter your api.video API key (available at https://my.api.video/: &quot;</span>)
+        <span style="color: #228899; font-weight: bold">if</span> <span style="color: #007722">len</span>(api_video) <span style="color: #333333">&lt;</span> <span style="color: #6666ff; font-weight: bold">43</span> <span style="color: #000000; font-weight: bold">or</span> <span style="color: #007722">len</span>(api_video) <span style="color: #333333">&gt;</span> <span style="color: #6666ff; font-weight: bold">43</span>:
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;The api.video API key is not correct, please try again.&quot;</span>)
+        <span style="color: #228899; font-weight: bold">else</span>:
+            <span style="color: #228899; font-weight: bold">return</span> api_video
+
+<span style="color: #666666; font-style: italic"># Choose an .mp4 to add sound to. MP4 is easier to work with when you need to combine videos, so it&#39;s the only format accepted. </span>
+<span style="color: #666666; font-style: italic"># The video you want to combine must be in the same folder the application is running in.</span>
+<span style="color: #228899; font-weight: bold">def</span> <span style="color: #55eedd; font-weight: bold">choose_video</span>(): 
+    filelist <span style="color: #333333">=</span> os<span style="color: #333333">.</span>listdir(<span style="background-color: #e0e0ff">&#39;.&#39;</span>)
+    <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+        <span style="color: #228899; font-weight: bold">for</span> item <span style="color: #000000; font-weight: bold">in</span> filelist:
+            <span style="color: #228899; font-weight: bold">if</span> item<span style="color: #333333">.</span>endswith(<span style="background-color: #e0e0ff">&quot;.mp4&quot;</span>):
+                <span style="color: #228899; font-weight: bold">print</span>(item)
+        filename <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Please select the video you want to use. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">if</span> filename <span style="color: #000000; font-weight: bold">in</span> filelist:
+            <span style="color: #228899; font-weight: bold">return</span> filename
+        <span style="color: #228899; font-weight: bold">else</span>: 
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;That&#39;s not a file. Please type the name of the file as you see it listed.</span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+
+<span style="color: #666666; font-style: italic"># If you have multiple scripts you can choose the one you want from the Scripts folder.</span>
+<span style="color: #228899; font-weight: bold">def</span> <span style="color: #55eedd; font-weight: bold">choose_script</span>():
+    filelist <span style="color: #333333">=</span> os<span style="color: #333333">.</span>listdir(<span style="background-color: #e0e0ff">&#39;Scripts&#39;</span>)
+    <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+        <span style="color: #228899; font-weight: bold">print</span>(filelist)
+        filename <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Please select the script you want to use by typing its complete name. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">if</span> filename <span style="color: #000000; font-weight: bold">in</span> filelist:
+            f <span style="color: #333333">=</span> <span style="color: #007722">open</span>(<span style="background-color: #e0e0ff">&#39;Scripts/&#39;</span> <span style="color: #333333">+</span> filename)
+            <span style="color: #228899; font-weight: bold">print</span>(f<span style="color: #333333">.</span>read())
+            use <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Is this the script you wanted to use? Type YES or NO. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+            <span style="color: #228899; font-weight: bold">if</span> use<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&#39;YES&#39;</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Great! Let&#39;s move on to personalizing your content!&quot;</span>)
+                <span style="color: #228899; font-weight: bold">return</span> <span style="background-color: #e0e0ff">&#39;Scripts/&#39;</span> <span style="color: #333333">+</span> filename
+            <span style="color: #228899; font-weight: bold">elif</span> use<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&#39;NO&#39;</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Okay, try again.&quot;</span>)
+
+<span style="color: #666666; font-style: italic"># Choose the csv file you&#39;ll use for personalization.</span>
+<span style="color: #228899; font-weight: bold">def</span> <span style="color: #55eedd; font-weight: bold">choose_personalization</span>():
+    filelist <span style="color: #333333">=</span> os<span style="color: #333333">.</span>listdir(<span style="background-color: #e0e0ff">&#39;Personalization&#39;</span>)
+    <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+        <span style="color: #228899; font-weight: bold">print</span>(filelist)
+        filename <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Please select the .csv file you want to use for personalization. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">if</span> filename <span style="color: #000000; font-weight: bold">in</span> filelist:
+            <span style="color: #228899; font-weight: bold">for</span> i <span style="color: #000000; font-weight: bold">in</span> <span style="color: #007722">range</span>(<span style="color: #6666ff; font-weight: bold">3</span>):
+                f <span style="color: #333333">=</span> <span style="color: #007722">open</span>(<span style="background-color: #e0e0ff">&#39;Personalization/&#39;</span> <span style="color: #333333">+</span> filename)
+                line <span style="color: #333333">=</span> f<span style="color: #333333">.</span>readlines()
+                <span style="color: #228899; font-weight: bold">print</span>(line[i])
+            f<span style="color: #333333">.</span>close()
+            use <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;These are the first three lines of the file you picked. Is this the file you wanted to use? Type YES or NO. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+            <span style="color: #228899; font-weight: bold">if</span> use<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&#39;YES&#39;</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Great! Let&#39;s move on to creating the audio track!&quot;</span>)
+                <span style="color: #228899; font-weight: bold">return</span> <span style="background-color: #e0e0ff">&#39;Personalization/&#39;</span> <span style="color: #333333">+</span> filename
+            <span style="color: #228899; font-weight: bold">elif</span> use<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&#39;NO&#39;</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Okay, try again.&quot;</span>)
+
+<span style="color: #666666; font-style: italic"># When you set up a script for use, you can provide some information about that script. This helps with set up</span>
+<span style="color: #666666; font-style: italic"># and returns a list of all the variables with their values. </span>
+<span style="color: #228899; font-weight: bold">def</span> <span style="color: #55eedd; font-weight: bold">get_script_details</span>():
+    <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;To set up the script, we need a few details. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+    scriptName <span style="color: #333333">=</span> <span style="background-color: #e0e0ff">&quot;a&quot;</span>
+    moduleName <span style="color: #333333">=</span> <span style="background-color: #e0e0ff">&quot;a&quot;</span>
+    projectName <span style="color: #333333">=</span> <span style="background-color: #e0e0ff">&quot;a&quot;</span>
+
+    <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+        scriptName <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;What do you want to name your script? Type it in. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;You typed: &quot;</span>, scriptName)
+        response <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Is this the name you wanted to use? Type YES or NO. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">if</span> response<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&#39;YES&#39;</span>:
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Great, let&#39;s get the other information we need!&quot;</span>)
+            <span style="color: #228899; font-weight: bold">break</span>
+        <span style="color: #228899; font-weight: bold">else</span>:
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Ok, try again.&quot;</span>)
+
+    <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+        moduleName <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;What do you want to name your module? Type it in. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;You typed: &quot;</span>, moduleName)
+        response <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Is this the name you wanted to use? Type YES or NO. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">if</span> response<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&#39;YES&#39;</span>:
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Great, let&#39;s get the other information we need!&quot;</span>)
+            <span style="color: #228899; font-weight: bold">break</span>
+        <span style="color: #228899; font-weight: bold">else</span>:
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Ok, try again.&quot;</span>)
+    
+    <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+        projectName <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;What do you want to name your project? Type it in. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;You typed: &quot;</span>, projectName)
+        response <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Is this the name you wanted to use? Type YES or NO. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">if</span> response<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&#39;YES&#39;</span>:
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Great, that&#39;s everything we need!&quot;</span>)
+            <span style="color: #228899; font-weight: bold">break</span>
+        <span style="color: #228899; font-weight: bold">else</span>:
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Ok, try again.&quot;</span>)
+
+    <span style="color: #228899; font-weight: bold">return</span> [scriptName, moduleName, projectName]
+
+<span style="color: #666666; font-style: italic"># After you choose a track, it&#39;s easier to combine if it&#39;s a .wav. This makes the file playable using PyDub and returns a PyDub object. </span>
+<span style="color: #666666; font-style: italic"># The .wav file can then be used. </span>
+<span style="color: #228899; font-weight: bold">def</span> <span style="color: #55eedd; font-weight: bold">check_audio_convert_track</span>():
+    <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+        audio_check <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Type PLAY to hear the sample now. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        <span style="color: #228899; font-weight: bold">if</span> audio_check<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&quot;PLAY&quot;</span>:
+            track <span style="color: #333333">=</span> AudioSegment<span style="color: #333333">.</span>from_mp3(<span style="background-color: #e0e0ff">&#39;Audio/sample.mp3&#39;</span>)
+            play(track)
+            ready <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Does the track sound the way you wanted? Type YES or NO. For NO, you&#39;ll have to start over again. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+            <span style="color: #228899; font-weight: bold">if</span> ready<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&quot;YES&quot;</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Great! Let&#39;s continue on to building the sample video!&quot;</span>)
+                <span style="color: #228899; font-weight: bold">return</span> track
+            <span style="color: #228899; font-weight: bold">if</span> ready<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&quot;NO&quot;</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Okay. The program will exit now. You&#39;ll need to figure out what tweaks to make to your script and voice.&quot;</span>)
+                sys<span style="color: #333333">.</span>exit()
+            <span style="color: #228899; font-weight: bold">else</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;That&#39;s not a valid response.&quot;</span>)
+        <span style="color: #228899; font-weight: bold">else</span>: 
+            <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;That&#39;s not a valid entry.&quot;</span>)
+
+<span style="color: #228899; font-weight: bold">def</span> <span style="color: #55eedd; font-weight: bold">make_video</span>(video, wav_track, title):
+    input_video <span style="color: #333333">=</span> ffmpeg<span style="color: #333333">.</span>input(video)
+    input_audio <span style="color: #333333">=</span> ffmpeg<span style="color: #333333">.</span>input(wav_track)
+    title <span style="color: #333333">=</span> title <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;.mp4&quot;</span>
+    ffmpeg<span style="color: #333333">.</span>concat(input_video, input_audio, v<span style="color: #333333">=</span><span style="color: #6666ff; font-weight: bold">1</span>, a<span style="color: #333333">=</span><span style="color: #6666ff; font-weight: bold">1</span>)<span style="color: #333333">.</span>output(title)<span style="color: #333333">.</span>run()
+    <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;A video with the title &quot;</span> <span style="color: #333333">+</span> title <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot; was added to this folder.&quot;</span>)
+
+<span style="color: #228899; font-weight: bold">def</span> <span style="color: #55eedd; font-weight: bold">add_video_return_mp4</span>(video_title, av_client, item, vid_description):
+    videos_api <span style="color: #333333">=</span> VideosApi(av_client)
+
+    item_values <span style="color: #333333">=</span> item<span style="color: #333333">.</span>values()
+    item_list <span style="color: #333333">=</span> <span style="color: #007722">list</span>(item_values)
+
+    video_create_payload <span style="color: #333333">=</span> {
+        <span style="background-color: #e0e0ff">&quot;title&quot;</span>: video_title,
+        <span style="background-color: #e0e0ff">&quot;description&quot;</span>: vid_description,
+        <span style="background-color: #e0e0ff">&quot;public&quot;</span>: <span style="color: #007722">True</span>,
+        <span style="background-color: #e0e0ff">&quot;tags&quot;</span>: item_list
+    }
+
+<span style="color: #666666; font-style: italic"># Create the container for your video and print the response</span>
+    response <span style="color: #333333">=</span> videos_api<span style="color: #333333">.</span>create(video_create_payload)
+
+<span style="color: #666666; font-style: italic"># Retrieve the video ID, you can upload once to a video ID</span>
+    video_id <span style="color: #333333">=</span> response[<span style="background-color: #e0e0ff">&quot;video_id&quot;</span>]
+
+<span style="color: #666666; font-style: italic"># Prepare the file you want to upload. Place the file in the same folder as your code.</span>
+    <span style="color: #007722">file</span> <span style="color: #333333">=</span> <span style="color: #007722">open</span>(video_title, <span style="background-color: #e0e0ff">&quot;rb&quot;</span>)
+
+<span style="color: #666666; font-style: italic"># Upload your video. This handles videos of any size. The video must be in the same folder as your code and 1080p. </span>
+<span style="color: #666666; font-style: italic"># If you want to upload from a link online, you need to add the source parameter when you create a new video.</span>
+    video_response <span style="color: #333333">=</span> videos_api<span style="color: #333333">.</span>upload(video_id, <span style="color: #007722">file</span>)
+    url <span style="color: #333333">=</span> video_response[<span style="background-color: #e0e0ff">&#39;assets&#39;</span>][<span style="background-color: #e0e0ff">&#39;player&#39;</span>]
+    <span style="color: #228899; font-weight: bold">return</span>(url)    
+
+
+<span style="color: #666666; font-style: italic"># Welcome and Instructions</span>
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;--------------------------------------------------------------&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;*          HELLO AND WELCOME TO THE AD LOCALIZER !           *&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;*   This tool lets you take a video and add a voice over     *&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;*   that can be personalized with information read from a    *&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;*   .csv file containing the personalization information.    *&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;*   Use the example content provided to start with, then try *&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;*   your own!                                                *&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;*   NOTE: You can exit the program at any time by typing     *&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;*   CTRL-C                                                   *&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;--------------------------------------------------------------&quot;</span>)
+
+<span style="color: #666666; font-style: italic"># Collect API Keys </span>
+
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;To get started, you&#39;ll need an api.video API key and an aflorithmic.ai API key.&quot;</span>)
+aflo_key <span style="color: #333333">=</span> get_aflo_key()
+api_video <span style="color: #333333">=</span> get_apivideo_key()
+
+<span style="color: #666666; font-style: italic"># Authenticate</span>
+av_client <span style="color: #333333">=</span> apivideo<span style="color: #333333">.</span>AuthenticatedApiClient(api_video)
+av_client<span style="color: #333333">.</span>connect()
+apiaudio<span style="color: #333333">.</span>api_key <span style="color: #333333">=</span> aflo_key
+
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Thanks! Now you&#39;re ready to choose your video. Your video must be in the same folder as this application.&quot;</span>)
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Pick your video. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+
+<span style="color: #666666; font-style: italic"># Choose Video</span>
+video <span style="color: #333333">=</span> choose_video()
+
+<span style="color: #666666; font-style: italic"># Choose Script</span>
+script <span style="color: #333333">=</span> choose_script()
+
+<span style="color: #666666; font-style: italic"># Create Script</span>
+script_details <span style="color: #333333">=</span> get_script_details()
+text <span style="color: #333333">=</span> <span style="color: #007722">open</span>(script, <span style="background-color: #e0e0ff">&quot;r&quot;</span>)
+text <span style="color: #333333">=</span> text<span style="color: #333333">.</span>read()
+
+script <span style="color: #333333">=</span> apiaudio<span style="color: #333333">.</span>Script()<span style="color: #333333">.</span>create(scriptText<span style="color: #333333">=</span>text, scriptName<span style="color: #333333">=</span>script_details[<span style="color: #6666ff; font-weight: bold">0</span>], moduleName<span style="color: #333333">=</span>script_details[<span style="color: #6666ff; font-weight: bold">1</span>], projectName<span style="color: #333333">=</span>script_details[<span style="color: #6666ff; font-weight: bold">2</span>])
+
+<span style="color: #666666; font-style: italic"># Personalization </span>
+<span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;You can personalize your script by reading in values from a .csv file to your script. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+csv_f <span style="color: #333333">=</span> choose_personalization()
+
+<span style="color: #666666; font-style: italic"># Create speech. Choose a voice! https://library.api.audio/speakers</span>
+
+<span style="color: #666666; font-style: italic"># Set up the csv file for use.</span>
+audience_combinations <span style="color: #333333">=</span> []
+<span style="color: #228899; font-weight: bold">with</span> <span style="color: #007722">open</span>(csv_f, newline<span style="color: #333333">=</span><span style="background-color: #e0e0ff">&#39;&#39;</span>) <span style="color: #228899; font-weight: bold">as</span> csvfile:
+    reader <span style="color: #333333">=</span> csv<span style="color: #333333">.</span>DictReader(csvfile)
+    <span style="color: #228899; font-weight: bold">for</span> row <span style="color: #000000; font-weight: bold">in</span> reader:
+        audience_combinations<span style="color: #333333">.</span>append(row)
+
+i <span style="color: #333333">=</span> <span style="color: #6666ff; font-weight: bold">0</span>
+vid_description <span style="color: #333333">=</span> <span style="background-color: #e0e0ff">&quot;&quot;</span>
+
+csv_header <span style="color: #333333">=</span> {<span style="background-color: #e0e0ff">&quot;Video&quot;</span>: <span style="background-color: #e0e0ff">&quot;Video Title&quot;</span>, <span style="background-color: #e0e0ff">&quot;MP4 Link&quot;</span>: <span style="background-color: #e0e0ff">&quot;MP4 Link Here&quot;</span>}
+<span style="color: #228899; font-weight: bold">with</span> <span style="color: #007722">open</span>(<span style="background-color: #e0e0ff">&#39;all_vid_links.csv&#39;</span>, <span style="background-color: #e0e0ff">&#39;w&#39;</span>) <span style="color: #228899; font-weight: bold">as</span> f: 
+    w <span style="color: #333333">=</span> csv<span style="color: #333333">.</span>DictWriter(f, csv_header<span style="color: #333333">.</span>keys())
+    w<span style="color: #333333">.</span>writeheader()
+    w<span style="color: #333333">.</span>writerow(csv_header)
+
+<span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+    vid_description <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Before we create the audio track, provide a brief description to describe the videos in the series we&#39;ll create. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+    keep_it <span style="color: #333333">=</span> <span style="color: #007722">input</span>(vid_description <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot; --- Is that the description you want? Type YES or NO. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+    <span style="color: #228899; font-weight: bold">if</span> keep_it<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&quot;YES&quot;</span>:
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Great! We&#39;re ready to work on the audio track now. Hang on a few moments while we process the first track.&quot;</span>)
+        <span style="color: #228899; font-weight: bold">break</span>
+    <span style="color: #228899; font-weight: bold">else</span>: 
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Okay, try again.&quot;</span>)
+
+<span style="color: #228899; font-weight: bold">for</span> item <span style="color: #000000; font-weight: bold">in</span> audience_combinations:
+
+    r <span style="color: #333333">=</span> apiaudio<span style="color: #333333">.</span>Speech()<span style="color: #333333">.</span>create(
+        scriptId<span style="color: #333333">=</span>script<span style="color: #333333">.</span>get(<span style="background-color: #e0e0ff">&quot;scriptId&quot;</span>),
+        voice<span style="color: #333333">=</span><span style="background-color: #e0e0ff">&quot;Aria&quot;</span>,
+        speed<span style="color: #333333">=</span><span style="color: #6666ff; font-weight: bold">100</span>,
+        silence_padding<span style="color: #333333">=</span><span style="color: #6666ff; font-weight: bold">0</span>,
+        audience<span style="color: #333333">=</span>[item]
+    )
+
+    template <span style="color: #333333">=</span> <span style="background-color: #e0e0ff">&quot;copacabana&quot;</span>
+
+    r <span style="color: #333333">=</span> apiaudio<span style="color: #333333">.</span>Mastering()<span style="color: #333333">.</span>create(
+        scriptId<span style="color: #333333">=</span>script<span style="color: #333333">.</span>get(<span style="background-color: #e0e0ff">&quot;scriptId&quot;</span>), soundTemplate<span style="color: #333333">=</span>template, audience<span style="color: #333333">=</span>[item]
+    )
+
+    <span style="color: #007722">file</span> <span style="color: #333333">=</span> apiaudio<span style="color: #333333">.</span>Mastering()<span style="color: #333333">.</span>download(
+        scriptId<span style="color: #333333">=</span>script<span style="color: #333333">.</span>get(<span style="background-color: #e0e0ff">&quot;scriptId&quot;</span>),
+        parameters<span style="color: #333333">=</span>item,
+        destination<span style="color: #333333">=</span><span style="background-color: #e0e0ff">&quot;Audio/&quot;</span>,
+    )
+    
+    <span style="color: #228899; font-weight: bold">print</span>(f<span style="background-color: #e0e0ff">&quot;✨ Mastered file for template {template} ✨&quot;</span>)
+    <span style="color: #228899; font-weight: bold">print</span>(<span style="color: #007722">file</span>)
+
+    <span style="color: #228899; font-weight: bold">if</span> i <span style="color: #333333">==</span> <span style="color: #6666ff; font-weight: bold">0</span>: 
+        
+        new_file <span style="color: #333333">=</span> os<span style="color: #333333">.</span>path<span style="color: #333333">.</span>join(os<span style="color: #333333">.</span>path<span style="color: #333333">.</span>dirname(<span style="color: #007722">file</span>), <span style="background-color: #e0e0ff">&quot;sample.mp3&quot;</span>)
+        os<span style="color: #333333">.</span>rename(<span style="color: #007722">file</span>, new_file)
+
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;You have generated your first audio file. It&#39;s in the Audio folder and we&#39;ve named it &#39;sample.mp3.&#39;&quot;</span>)
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Let&#39;s make sure it sounds the way you want.&quot;</span>)
+        wav_track <span style="color: #333333">=</span> check_audio_convert_track()
+        wav_track<span style="color: #333333">.</span>export(<span style="background-color: #e0e0ff">&quot;Audio/sample.wav&quot;</span>, format<span style="color: #333333">=</span><span style="background-color: #e0e0ff">&quot;wav&quot;</span>)
+        vid_list <span style="color: #333333">=</span> video<span style="color: #333333">.</span>split(<span style="background-color: #e0e0ff">&#39;.&#39;</span>)
+        video_title <span style="color: #333333">=</span> vid_list[<span style="color: #6666ff; font-weight: bold">0</span>]
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;We&#39;re going to combine the video and the audio now. The video will appear in the same folder as your application title &quot;</span> <span style="color: #333333">+</span> video_title <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;-sample&quot;</span>)
+        make_video(video, <span style="background-color: #e0e0ff">&#39;Audio/sample.wav&#39;</span>, video_title <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;-sample&quot;</span>)
+        link_mp4 <span style="color: #333333">=</span> add_video_return_mp4(video_title <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;-sample.mp4&quot;</span>, av_client, item, vid_description)
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Please watch the sample video that we&#39;ll open for you in the webbrowser. Then return to the terminal here. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+        webbrowser<span style="color: #333333">.</span>open(link_mp4)
+        <span style="color: #228899; font-weight: bold">while</span> <span style="color: #007722">True</span>:
+            answer <span style="color: #333333">=</span> <span style="color: #007722">input</span>(<span style="background-color: #e0e0ff">&quot;Are the video and audio correct? You will have to start over if not. Type YES or NO. </span><span style="color: #666666; font-weight: bold; background-color: #e0e0ff">\n</span><span style="background-color: #e0e0ff">&quot;</span>)
+            <span style="color: #228899; font-weight: bold">if</span> answer<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&quot;YES&quot;</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Great, we&#39;ll start creating the videos in bulk and uploading to api.video now.&quot;</span>)
+                i <span style="color: #333333">+=</span> <span style="color: #6666ff; font-weight: bold">1</span>
+                <span style="color: #228899; font-weight: bold">break</span>
+            <span style="color: #228899; font-weight: bold">if</span> answer<span style="color: #333333">.</span>upper() <span style="color: #333333">==</span> <span style="background-color: #e0e0ff">&quot;NO&quot;</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;You will have to go back and figure out what&#39;s wrong with the video or audio. Exiting now.&quot;</span>)
+                sys<span style="color: #333333">.</span>exit()
+            <span style="color: #228899; font-weight: bold">else</span>:
+                <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;That&#39;s not a valid response, try again.&quot;</span>)
+        
+    <span style="color: #228899; font-weight: bold">else</span>: 
+        <span style="color: #666666; font-style: italic"># Convert the audio file so we can combine it. </span>
+        counter <span style="color: #333333">=</span> <span style="color: #007722">str</span>(i)
+        vid_list <span style="color: #333333">=</span> video<span style="color: #333333">.</span>split(<span style="background-color: #e0e0ff">&#39;.&#39;</span>)
+        audio_title <span style="color: #333333">=</span> <span style="background-color: #e0e0ff">&quot;Audio/&quot;</span> <span style="color: #333333">+</span> vid_list[<span style="color: #6666ff; font-weight: bold">0</span>] <span style="color: #333333">+</span> counter <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;-audio&quot;</span> <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;.wav&quot;</span>
+        wav_track <span style="color: #333333">=</span> AudioSegment<span style="color: #333333">.</span>from_mp3(<span style="color: #007722">file</span>)
+        wav_track<span style="color: #333333">.</span>export(audio_title, format<span style="color: #333333">=</span><span style="background-color: #e0e0ff">&quot;wav&quot;</span>)
+
+        <span style="color: #666666; font-style: italic"># Make a video </span>
+        video_title <span style="color: #333333">=</span> vid_list[<span style="color: #6666ff; font-weight: bold">0</span>] <span style="color: #333333">+</span> counter
+        make_video(video, audio_title, video_title)
+        link_mp4 <span style="color: #333333">=</span> add_video_return_mp4(video_title <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;.mp4&quot;</span>, av_client, item, vid_description)
+        my_dict <span style="color: #333333">=</span> {<span style="background-color: #e0e0ff">&quot;Video&quot;</span>: video_title <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;.mp4&quot;</span>, <span style="background-color: #e0e0ff">&quot;MP4 Link&quot;</span>: link_mp4}
+        <span style="color: #228899; font-weight: bold">with</span> <span style="color: #007722">open</span>(<span style="background-color: #e0e0ff">&#39;all_vid_links.csv&#39;</span>, <span style="background-color: #e0e0ff">&#39;a&#39;</span>) <span style="color: #228899; font-weight: bold">as</span> f: 
+            w <span style="color: #333333">=</span> csv<span style="color: #333333">.</span>DictWriter(f, my_dict<span style="color: #333333">.</span>keys())
+            w<span style="color: #333333">.</span>writerow(my_dict)
+        <span style="color: #666666; font-style: italic"># Upload the video and delete it from here</span>
+        os<span style="color: #333333">.</span>remove(video_title <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;.mp4&quot;</span>)
+        <span style="color: #228899; font-weight: bold">print</span>(<span style="background-color: #e0e0ff">&quot;Video &quot;</span> <span style="color: #333333">+</span> video_title <span style="color: #333333">+</span> <span style="background-color: #e0e0ff">&quot;added!&quot;</span>)
+        i <span style="color: #333333">+=</span> <span style="color: #6666ff; font-weight: bold">1</span>
+</pre></td></tr></table></div>
